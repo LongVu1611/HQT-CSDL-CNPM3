@@ -112,3 +112,9 @@ ADD CONSTRAINT df_ngaynhap DEFAULT GETDATE() FOR NgayNhap
 
 ALTER TABLE SanPham
 ADD CONSTRAINT df_DVT CHECK (DVT = N'KG' or DVT = N'Thùng' or DVT = N'Hộp' or DVT = N'Cái')
+
+--12.Đổi tên CSDL Sales thành BanHang
+ALTER DATABASE Sale MODIFY NAME = BanHang;
+
+--14.Tạo bản BackUp cho CSDL BanHang
+Backup database BanHang to disk = 'D:\Backup'
