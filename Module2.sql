@@ -82,4 +82,32 @@
 						join [HumanResources].[EmployeePayHistory] e on h.BusinessEntityID=e.BusinessEntityID
 	group by d.DepartmentID, d.name
 	having avg([Rate])>30
+--II) Subquery
+--1 Liệt kê các sản phẩm gồm các thông tin product names và product ID có trên 100 đơn đặt hàng trong tháng 7 năm 2008
+
+	select ProductID, Name
+	from Production.Product
+	where ProductID in (select ProductID
+						from  Sales.SalesOrderDetail d join Sales.SalesOrderHeader h on d.SalesOrderID=h.SalesOrderID
+						where MONTH(OrderDate)=7 and YEAR(OrderDate)=2008
+						group by  ProductID
+						having COUNT(*)>100)
+	---
+	select ProductID, Name
+	from Production.Product p 
+	where  exists (select ProductID
+						from  Sales.SalesOrderDetail d join Sales.SalesOrderHeader h on d.SalesOrderID=h.SalesOrderID
+						where MONTH(OrderDate)=7 and YEAR(OrderDate)=2008 and ProductID=p.ProductID
+						group by  ProductID
+						having COUNT(*)>100)
+--2.Liệt kê các sản phẩm (ProductID, name) có số hóa đơn đặt hàng nhiều nhất trong tháng 7/2008
+	select p.ProductID, Name
+	from Production.Product p join Sales.SalesOrderDetail d on p.ProductID=d.ProductID
+				  join Sales.SalesOrderHeader h on d.SalesOrderID=h.SalesOrderID
+	where  MONTH(OrderDate)=7 and YEAR(OrderDate)=2008
+	group by p.ProductID, Name
+	having COUNT(*)>=all( select COUNT(*)
+		from Sales.SalesOrderDetail d join Sales.SalesOrderHeader h on d.SalesOrderID=h.SalesOrderID
+		where MONTH(OrderDate)=7 and YEAR(OrderDate)=2008
+		group by ProductID
 
