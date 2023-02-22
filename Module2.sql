@@ -67,3 +67,19 @@
 	where YEAR([OrderDate])>=2007 and YEAR([OrderDate])<=2008
 	group by PersonID, FirstName +' '+ LastName
 	having count(*)>25
+
+--9) 
+	select p.ProductID, Name, CountofOrderQty=sum([OrderQty]), yearofSale=year([OrderDate])
+	from [Production].[Product] p join [Sales].[SalesOrderDetail] d on p.ProductID=d.ProductID
+								  join [Sales].[SalesOrderHeader] h on d.SalesOrderID=d.SalesOrderID
+	where name like 'Bike%' or name like 'Sport%'
+	group by p.ProductID, Name, year([OrderDate])
+	having sum([OrderQty])>500
+	
+--10)
+	select d.DepartmentID, d.name, AvgofRate=avg([Rate])
+	from [HumanResources].[Department] d join [HumanResources].[EmployeeDepartmentHistory] h on d.DepartmentID=h.DepartmentID
+						join [HumanResources].[EmployeePayHistory] e on h.BusinessEntityID=e.BusinessEntityID
+	group by d.DepartmentID, d.name
+	having avg([Rate])>30
+
