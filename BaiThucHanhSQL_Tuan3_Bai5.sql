@@ -60,3 +60,33 @@ SELECT (NHANVIEN.HONV + ' ' + NHANVIEN.TENLOT + ' ' + NHANVIEN.TENNV) AS 'Họ t
 FROM NHANVIEN, DEAN, PHANCONG
 WHERE NHANVIEN.MANV = PHANCONG.MA_NVIEN AND DEAN.MADA = PHANCONG.MADA
 GROUP BY (NHANVIEN.HONV + ' ' + NHANVIEN.TENLOT + ' ' + NHANVIEN.TENNV)
+--30. Với mỗi phòng ban, liệt kê tên phòng ban và lương trung bình của những nhân viên làm việc cho phòng ban đó.
+SELECT PHONGBAN.MAPHG, PHONGBAN.TENPHG, AVG(NHANVIEN.LUONG) AS 'Lương trung bình'
+FROM NHANVIEN, PHONGBAN
+WHERE NHANVIEN.PHG = PHONGBAN.MAPHG
+GROUP BY PHONGBAN.MAPHG, PHONGBAN.TENPHG
+
+--31.Với các phòng ban có mức lương trung bình trên 5.200.000, liệt kê tên phòng ban và số lượng nhân viên của phòng ban đó.
+SELECT PHONGBAN.TENPHG, COUNT(NHANVIEN.MANV) AS N'Số lượng nhân viên'
+FROM NHANVIEN, PHONGBAN
+WHERE NHANVIEN.PHG = PHONGBAN.MAPHG
+GROUP BY PHONGBAN.TENPHG
+HAVING AVG(NHANVIEN.LUONG)>5200000
+
+--32. Với mỗi phòng ban, cho biết tên phòng ban và số lượng đề án mà phòng ban đó chủ trì.
+SELECT PHONGBAN.TENPHG, COUNT(DEAN.PHONG) AS 'Số lượng đề án'
+FROM PHONGBAN, DEAN
+WHERE PHONGBAN.MAPHG = DEAN.PHONG
+GROUP BY PHONGBAN.TENPHG
+
+--33. Với mỗi phòng ban, cho biết tên phòng ban, họ tên người trưởng phòng và số lượng đề án mà phòng ban đó chủ trì.
+SELECT PHONGBAN.TENPHG, (NHANVIEN.HONV + ' ' + NHANVIEN.TENLOT + ' ' + NHANVIEN.TENNV) AS 'Họ tên trưởng phòng', COUNT(DEAN.PHONG) AS 'Số lượng đề án'
+FROM NHANVIEN, PHONGBAN, DEAN
+WHERE NHANVIEN.MANV = PHONGBAN.TRPHG AND PHONGBAN.MAPHG = DEAN.PHONG
+GROUP BY PHONGBAN.TENPHG, (NHANVIEN.HONV + ' ' + NHANVIEN.TENLOT + ' ' + NHANVIEN.TENNV)
+
+--34. Với mỗi đề án, cho biết tên đề án và số lượng nhân viên tham gia đề án
+SELECT DEAN.MADA, DEAN.TENDA, COUNT(DEAN.MADA) AS 'Số lượng công việc'
+FROM DEAN, CONGVIEC
+WHERE DEAN.MADA = CONGVIEC.MADA
+GROUP BY DEAN.MADA, DEAN.TENDA
